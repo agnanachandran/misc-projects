@@ -7,13 +7,60 @@
 //
 
 #import "PZOVideoGameTableViewController.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 #import "VideoGame.h"
 
 @interface PZOVideoGameTableViewController ()
 @property NSMutableArray *videoGameList; // list of videogames fetched from
+@property NSMutableData *receivedData;
 @end
 
 @implementation PZOVideoGameTableViewController
+static NSString *const FULL_URL = @"http://api.remix.bestbuy.com/v1/products(name=headphones*&name!=Dre*)?show=sku,name,salePrice,image&format=json&pageSize=100&sort=salePrice.dsc&apiKey=q3z2rf7eskg47b78xnwqxcvq";
+#pragma mark - NSURLConnection Delegate Methods
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+    // Called when server has determined that it has enough info to create NSURLResponse object
+    // Can be called multiple times (e.g. in the case of a redirect), so each time, we reset the data.
+    [self.receivedData setLength:0];
+    
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    // Append data
+    [self.receivedData appendData:data];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    // Release connection and received data by setting connection and received data to nil
+    NSLog(@"Connection failed! Error - %@ %@",
+          [error localizedDescription],
+          [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    // do something with the data
+    // receivedData is declared as a property elsewhere
+    NSLog(@"Succeeded! Received %d bytes of data",[self.receivedData length]);
+    id parsedJsonData = [NSJSONSerialization JSONObjectWithData:self.receivedData options:NSJSONReadingMutableContainers error:nil];
+    if ([parsedJsonData isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *parsedJsonObject = (NSDictionary *)parsedJsonData;
+        NSArray *products = [parsedJsonObject objectForKey:@"products"];
+        for (NSDictionary *jsonObject in products) {
+            NSString *imageUrl = [jsonObject objectForKey:@"image"];
+            NSString *gameName = [jsonObject objectForKey:@"name"];
+            float salePrice = [[jsonObject objectForKey:@"salePrice"] floatValue];
+//            NSString *sku = [jsonObject objectForKey:@"sku"];
+            VideoGame *videoGame = [[VideoGame alloc] initWithName:gameName andPlatform:@"TODO" andPrice:salePrice andImageUrlString:imageUrl];
+            [self.videoGameList addObject:videoGame];
+        }
+    }
+    [self.tableView reloadData];
+}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -24,18 +71,35 @@
     return self;
 }
 
+- (void)sendHttpRequest
+{
+    // Create the request
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:FULL_URL] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0]; // timeout after 60s
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+    if (!connection) {
+        // self.receivedData = nil;
+        // Connection failed
+    }
+    
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
+    // Instantiation code
     self.videoGameList = [[NSMutableArray alloc] init];
-    
-    // pre populate videoGameList
-    [self.videoGameList addObject:[[VideoGame alloc] initWithName:@ "Jak And Daxter" andPlatform:@"PS2" andPrice:3.00 andImageUrlString:@"http://google.ca"]];
-    [[self tableView] reloadData];
+    self.receivedData = [NSMutableData dataWithCapacity:0];
     
     // Send request and put data in videoGameList
-
+    [self sendHttpRequest];
+    
+    // pre populate videoGameList
+    // [self.videoGameList addObject:[[VideoGame alloc] initWithName:@ "Loading..." andPlatform:@"PS2" andPrice:3.00 andImageUrlString:@"http://google.ca"]];
+    [[self tableView] reloadData];
+    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
@@ -70,7 +134,9 @@
     
     // Configure the cell...
     
-    cell.textLabel.text = [self.videoGameList[indexPath.row] gameName];
+    VideoGame *videoGame = self.videoGameList[indexPath.row];
+    cell.textLabel.text = [videoGame gameName];
+    [cell.imageView setImageWithURL:[videoGame imageUrl] placeholderImage:[UIImage imageNamed:@"headphone-icon"]];
     return cell;
 }
 

@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface PZOVideoGameTableViewController : UITableViewController
+@interface PZOVideoGameTableViewController : UITableViewController<NSURLConnectionDelegate, NSURLConnectionDataDelegate, NSURLConnectionDownloadDelegate>
 
 @end
