@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Headphone Viewer</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="app_title">Headphone Viewer</string>
+    <string name="placeholder_textView">TextView</string>
+    <string name="placeholder_headphones_image">A picture of the headphones</string>
+    <string name="search_hint">Search headphones</string>
+
+</resources>
