@@ -2,12 +2,13 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "PlayStation-1.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "headphone-2.png"
+      "filename" : "PlayStation.png"
     }
   ],
   "info" : {

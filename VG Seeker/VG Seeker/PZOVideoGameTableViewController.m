@@ -40,12 +40,7 @@ static NSString *const FULL_URL = @"http://api.remix.bestbuy.com/v1/products(pla
     self.currentPage = 1;
     self.hasSearched = YES;
     [self sendHttpRequest:self.searchText];
-    for (VideoGame *game in self.allVideoGameList) {
-        if ([game.gameName rangeOfString:searchContents].location != NSNotFound) {
-            [self.videoGameList addObject:game];
-        }
-    }
-    [self.tableView reloadData];
+    [self.segmentedControl setSelectedSegmentIndex:UISegmentedControlNoSegment];
     [searchBar resignFirstResponder];
 }
 
@@ -55,14 +50,12 @@ static NSString *const FULL_URL = @"http://api.remix.bestbuy.com/v1/products(pla
     self.searchText = searchContents;
     if ([searchContents isEqualToString:@""]) {
         self.searchText = nil;
-        NSString *platform = [self.segmentedControl titleForSegmentAtIndex:[self.segmentedControl selectedSegmentIndex]];
         [self.videoGameList removeAllObjects];
         for (VideoGame *game in self.allVideoGameList) {
-            if ([game.platform isEqualToString:platform]) {
-                [self.videoGameList addObject:game];
-            }
+            [self.videoGameList addObject:game];
         }
-        [self.tableView reloadData];
+        [self.segmentedControl setSelectedSegmentIndex:UISegmentedControlNoSegment];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
     }
 
     [searchBar resignFirstResponder];
@@ -112,6 +105,7 @@ static NSString *const FULL_URL = @"http://api.remix.bestbuy.com/v1/products(pla
             [self.videoGameList addObject:videoGame];
         }
     }
+    
     [self.tableView reloadData];
     if (self.currentPage < self.totalPages) {
         self.currentPage++;
@@ -165,7 +159,6 @@ static NSString *const FULL_URL = @"http://api.remix.bestbuy.com/v1/products(pla
     [self sendHttpRequest];
     [self.tableView registerNib:[UINib nibWithNibName:@"PZOVGCell" bundle:nil]
          forCellReuseIdentifier:@"PZOVGCell"];
-    [[self tableView] reloadData];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -206,7 +199,7 @@ static NSString *const FULL_URL = @"http://api.remix.bestbuy.com/v1/products(pla
     // Configure the cell...
     VideoGame *videoGame = self.videoGameList[indexPath.row];
     cell.nameLabel.text = [videoGame gameName];
-    [cell.gameImage setImageWithURL:[videoGame imageUrl] placeholderImage:[UIImage imageNamed:@"headphone-icon"]];
+    [cell.gameImage setImageWithURL:[videoGame imageUrl] placeholderImage:[UIImage imageNamed:@"vg-icon"]];
     cell.priceLabel.text = [videoGame priceString];
     cell.platformLabel.text = [videoGame platform];
     return cell;
@@ -228,7 +221,7 @@ static NSString *const FULL_URL = @"http://api.remix.bestbuy.com/v1/products(pla
             [self.videoGameList addObject:game];
         }
     }
-    [self.tableView reloadData];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
 }
 
 /*
