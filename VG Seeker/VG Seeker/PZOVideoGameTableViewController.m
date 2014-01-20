@@ -9,14 +9,65 @@
 #import "PZOVideoGameTableViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "VideoGame.h"
+#import "PZOVGCell.h"
 
 @interface PZOVideoGameTableViewController ()
-@property NSMutableArray *videoGameList; // list of videogames fetched from
+@property NSMutableArray *videoGameList; // list of videogames in table view
+@property NSMutableArray *allVideoGameList; // list of all videogames fetched
 @property NSMutableData *receivedData;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
+@property (strong, nonatomic) UISearchBar *searchBar;
+@property (strong, nonatomic) NSString *searchText;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property BOOL hasSearched;
+@property int totalPages;
+@property int currentPage;
 @end
 
 @implementation PZOVideoGameTableViewController
-static NSString *const FULL_URL = @"http://api.remix.bestbuy.com/v1/products(name=headphones*&name!=Dre*)?show=sku,name,salePrice,image&format=json&pageSize=100&sort=salePrice.dsc&apiKey=q3z2rf7eskg47b78xnwqxcvq";
+static NSString *const FULL_URL = @"http://api.remix.bestbuy.com/v1/products(platform%20in(playstation%203,playstation%204,psp)&salePrice%3C60)?show=sku,name,salePrice,platform,image&format=json&pageSize=100&page=&sort=salesRankMediumTerm.asc&apiKey=q3z2rf7eskg47b78xnwqxcvq";
+
+#pragma mark - UISearchBarDelegate Methods
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    NSString *searchContents = searchBar.text;
+    self.searchText = searchContents;
+    if ([searchContents isEqualToString:@""]) {
+        self.searchText = nil;
+    }
+    [self.videoGameList removeAllObjects];
+    self.currentPage = 1;
+    self.hasSearched = YES;
+    [self sendHttpRequest:self.searchText];
+    for (VideoGame *game in self.allVideoGameList) {
+        if ([game.gameName rangeOfString:searchContents].location != NSNotFound) {
+            [self.videoGameList addObject:game];
+        }
+    }
+    [self.tableView reloadData];
+    [searchBar resignFirstResponder];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    NSString *searchContents = searchBar.text;
+    self.searchText = searchContents;
+    if ([searchContents isEqualToString:@""]) {
+        self.searchText = nil;
+        NSString *platform = [self.segmentedControl titleForSegmentAtIndex:[self.segmentedControl selectedSegmentIndex]];
+        [self.videoGameList removeAllObjects];
+        for (VideoGame *game in self.allVideoGameList) {
+            if ([game.platform isEqualToString:platform]) {
+                [self.videoGameList addObject:game];
+            }
+        }
+        [self.tableView reloadData];
+    }
+
+    [searchBar resignFirstResponder];
+}
+
 #pragma mark - NSURLConnection Delegate Methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
@@ -43,61 +94,77 @@ static NSString *const FULL_URL = @"http://api.remix.bestbuy.com/v1/products(nam
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-    // do something with the data
-    // receivedData is declared as a property elsewhere
-    NSLog(@"Succeeded! Received %d bytes of data",[self.receivedData length]);
     id parsedJsonData = [NSJSONSerialization JSONObjectWithData:self.receivedData options:NSJSONReadingMutableContainers error:nil];
     if ([parsedJsonData isKindOfClass:[NSDictionary class]]) {
         NSDictionary *parsedJsonObject = (NSDictionary *)parsedJsonData;
+        self.totalPages = [[parsedJsonObject objectForKey:@"totalPages"] intValue];
+        self.currentPage = [[parsedJsonObject objectForKey:@"currentPage"] intValue];
         NSArray *products = [parsedJsonObject objectForKey:@"products"];
         for (NSDictionary *jsonObject in products) {
             NSString *imageUrl = [jsonObject objectForKey:@"image"];
             NSString *gameName = [jsonObject objectForKey:@"name"];
             float salePrice = [[jsonObject objectForKey:@"salePrice"] floatValue];
-//            NSString *sku = [jsonObject objectForKey:@"sku"];
-            VideoGame *videoGame = [[VideoGame alloc] initWithName:gameName andPlatform:@"TODO" andPrice:salePrice andImageUrlString:imageUrl];
+            NSString *platform = [jsonObject objectForKey:@"platform"];
+            VideoGame *videoGame = [[VideoGame alloc] initWithName:gameName andPlatform:platform andPrice:salePrice andImageUrlString:imageUrl];
+            if (!self.hasSearched) {
+                [self.allVideoGameList addObject:videoGame];
+            }
             [self.videoGameList addObject:videoGame];
         }
     }
     [self.tableView reloadData];
-}
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
+    if (self.currentPage < self.totalPages) {
+        self.currentPage++;
+        [self sendHttpRequest:self.searchText];
     }
-    return self;
 }
 
 - (void)sendHttpRequest
 {
+    [self sendHttpRequest:nil];
+}
+
+- (void)sendHttpRequest:(NSString *)searchText
+{
     // Create the request
+    NSString *urlString = [FULL_URL stringByReplacingOccurrencesOfString:@"page=" withString:[NSString stringWithFormat:@"page=%d", self.currentPage]];
     
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:FULL_URL] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0]; // timeout after 60s
+    if (searchText) {
+        urlString = [urlString stringByReplacingOccurrencesOfString:@"products(" withString:[NSString stringWithFormat:@"products(name=%@*&", searchText]];
+    }
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString] cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:60.0]; // timeout after 60s
+    
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     
     if (!connection) {
         // self.receivedData = nil;
         // Connection failed
     }
-    
+
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    UISearchBar *tempSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 0)];
+    self.searchBar = tempSearchBar;
+    [self.searchBar setShowsCancelButton:YES];
+    [self.searchBar sizeToFit];
+    [self.tableView setTableHeaderView:self.searchBar];
+    self.searchBar.delegate = self;
+    [self.tableView setDataSource:self];
+    [self.tableView setDelegate:self];
     
     // Instantiation code
     self.videoGameList = [[NSMutableArray alloc] init];
+    self.allVideoGameList = [[NSMutableArray alloc] init];
     self.receivedData = [NSMutableData dataWithCapacity:0];
-    
+    self.currentPage = 1;
     // Send request and put data in videoGameList
     [self sendHttpRequest];
-    
-    // pre populate videoGameList
-    // [self.videoGameList addObject:[[VideoGame alloc] initWithName:@ "Loading..." andPlatform:@"PS2" andPrice:3.00 andImageUrlString:@"http://google.ca"]];
+    [self.tableView registerNib:[UINib nibWithNibName:@"PZOVGCell" bundle:nil]
+         forCellReuseIdentifier:@"PZOVGCell"];
     [[self tableView] reloadData];
     
     // Uncomment the following line to preserve selection between presentations.
@@ -121,6 +188,11 @@ static NSString *const FULL_URL = @"http://api.remix.bestbuy.com/v1/products(nam
     return 1;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 140;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
@@ -129,15 +201,34 @@ static NSString *const FULL_URL = @"http://api.remix.bestbuy.com/v1/products(nam
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"ListPrototypeCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
+    static NSString *CellIdentifier = @"PZOVGCell";
+    PZOVGCell *cell = (PZOVGCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     // Configure the cell...
-    
     VideoGame *videoGame = self.videoGameList[indexPath.row];
-    cell.textLabel.text = [videoGame gameName];
-    [cell.imageView setImageWithURL:[videoGame imageUrl] placeholderImage:[UIImage imageNamed:@"headphone-icon"]];
+    cell.nameLabel.text = [videoGame gameName];
+    [cell.gameImage setImageWithURL:[videoGame imageUrl] placeholderImage:[UIImage imageNamed:@"headphone-icon"]];
+    cell.priceLabel.text = [videoGame priceString];
+    cell.platformLabel.text = [videoGame platform];
     return cell;
+}
+
+- (void) tableView: (UITableView *) tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger index = indexPath.row;
+    VideoGame *game = [self.videoGameList objectAtIndex:index];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[[NSString stringWithFormat:@"http://google.com/search?q=%@", game.gameName] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+}
+
+
+- (IBAction)segmentControlValueChanged:(UISegmentedControl *)sender {
+    NSString *platform = [sender titleForSegmentAtIndex:[sender selectedSegmentIndex]];
+    [self.videoGameList removeAllObjects];
+    for (VideoGame *game in self.allVideoGameList) {
+        if ([game.platform isEqualToString:platform]) {
+            [self.videoGameList addObject:game];
+        }
+    }
+    [self.tableView reloadData];
 }
 
 /*

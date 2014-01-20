@@ -19,7 +19,8 @@
     if (self) {
         self.gameName = name;
         self.platform = platform;
-        self.price = price;
+        NSString *priceString = [NSString stringWithFormat:@"%.02f", price];
+        self.priceString = priceString;
         self.imageUrl = [[NSURL alloc] initWithString:imageUrl];
     }
     return self;

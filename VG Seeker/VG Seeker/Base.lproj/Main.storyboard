@@ -4,43 +4,58 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
     </dependencies>
     <scenes>
-        <!--Video Game Table View Controller - VG Seeker-->
-        <scene sceneID="0uR-zj-CW2">
+        <!--Video Game Table View Controller - Video Game Finder-->
+        <scene sceneID="Yxg-cN-s4O">
             <objects>
-                <tableViewController id="WJc-e4-Onb" customClass="PZOVideoGameTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="VFp-JK-NkG">
+                <viewController id="XBQ-ba-E1J" customClass="PZOVideoGameTableViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="cU1-qP-9h1"/>
+                        <viewControllerLayoutGuide type="bottom" id="N2F-0S-QAB"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="7yl-Bl-9J9">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ListPrototypeCell" textLabel="4pd-4D-cC0" imageView="waB-7a-saa" style="IBUITableViewCellStyleDefault" id="UyA-vI-11B">
-                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UyA-vI-11B" id="Cql-VJ-Kfz">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="4pd-4D-cC0">
-                                            <rect key="frame" x="54" y="0.0" width="251" height="43"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Xx5-i1-qel">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="541"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="PZOVGCell" id="j8V-Wt-gPg" customClass="PZOVGCell">
+                                        <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="j8V-Wt-gPg">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="headphone-icon" id="waB-7a-saa">
-                                            <rect key="frame" x="15" y="9" width="24" height="24"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </imageView>
-                                    </subviews>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="VG Seeker" id="jCy-pG-Lb4"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Xdn-Fd-Pmi" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="7uZ-27-gCH">
+                                <rect key="frame" x="0.0" y="540" width="320" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="PlayStation 3"/>
+                                    <segment title="PlayStation 4"/>
+                                    <segment title="PSP"/>
+                                </segments>
+                                <connections>
+                                    <action selector="segmentControlValueChanged:" destination="XBQ-ba-E1J" eventType="valueChanged" id="RbT-bO-JSe"/>
+                                </connections>
+                            </segmentedControl>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Video Game Finder" id="lYx-uX-1eo"/>
+                    <connections>
+                        <outlet property="searchBar" destination="Xx5-i1-qel" id="wfb-A9-1RW"/>
+                        <outlet property="segmentedControl" destination="7uZ-27-gCH" id="IRh-xC-Bed"/>
+                        <outlet property="tableView" destination="Xx5-i1-qel" id="p1N-xm-oOe"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Bgf-JK-wwf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1379.5" y="117"/>
+            <point key="canvasLocation" x="-1354" y="117"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="g11-JU-qLP">
@@ -50,7 +65,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="WJc-e4-Onb" kind="relationship" relationship="rootViewController" id="VrY-mO-bzg"/>
+                        <segue destination="XBQ-ba-E1J" kind="relationship" relationship="rootViewController" id="Yc5-gg-Nrp"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fVW-Mg-vM2" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -58,9 +73,6 @@
             <point key="canvasLocation" x="-1913.5" y="117"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="headphone-icon" width="24" height="24"/>
-    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

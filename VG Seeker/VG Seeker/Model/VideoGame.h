@@ -11,7 +11,7 @@
 @interface VideoGame : NSObject
 @property NSString *gameName;
 @property NSString *platform;
-@property double price;
+@property NSString *priceString;
 @property NSURL *imageUrl;
 
 - (VideoGame *)initWithName:(NSString *)name
