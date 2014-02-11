@@ -7,7 +7,7 @@ import com.loopj.android.http.RequestParams;
 public class BBClient {
 
 	private static final String BASE_URL = "http://api.remix.bestbuy.com/v1/";
-	private static final String API_KEY = "q3z2rf7eskg47b78xnwqxcvq";
+	private static final String API_KEY = ApiConstants.API_KEY;
 	private static final String SHOWN_SPECS = "sku,name,salePrice,image";
 	private static AsyncHttpClient client = new AsyncHttpClient();
 

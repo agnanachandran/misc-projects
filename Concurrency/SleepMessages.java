@@ -10,6 +10,7 @@ public class SleepMessages {
         for (int i = 0; i < importantInfo.length; i++) {
             Thread.sleep(4000);
             System.out.println(importantInfo[i]);
+            System.out.
         }
     }
 }

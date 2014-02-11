@@ -10,6 +10,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "VideoGame.h"
 #import "PZOVGCell.h"
+#import "Constants.h"
 
 @interface PZOVideoGameTableViewController ()
 @property NSMutableArray *videoGameList; // list of videogames in table view
@@ -25,7 +26,7 @@
 @end
 
 @implementation PZOVideoGameTableViewController
-static NSString *const FULL_URL = @"http://api.remix.bestbuy.com/v1/products(platform%20in(playstation%203,playstation%204,psp)&salePrice%3C60)?show=sku,name,salePrice,platform,image&format=json&pageSize=100&page=&sort=salesRankMediumTerm.asc&apiKey=q3z2rf7eskg47b78xnwqxcvq";
+static NSString *const BB_API_URL_WITHOUT_KEY = @"http://api.remix.bestbuy.com/v1/products(platform%20in(playstation%203,playstation%204,psp)&salePrice%3C60)?show=sku,name,salePrice,platform,image&format=json&pageSize=100&page=&sort=salesRankMediumTerm.asc&apiKey=";
 
 #pragma mark - UISearchBarDelegate Methods
 
@@ -121,7 +122,7 @@ static NSString *const FULL_URL = @"http://api.remix.bestbuy.com/v1/products(pla
 - (void)sendHttpRequest:(NSString *)searchText
 {
     // Create the request
-    NSString *urlString = [FULL_URL stringByReplacingOccurrencesOfString:@"page=" withString:[NSString stringWithFormat:@"page=%d", self.currentPage]];
+    NSString *urlString = [[BB_API_URL_WITHOUT_KEY stringByAppendingString:API_KEY] stringByReplacingOccurrencesOfString:@"page=" withString:[NSString stringWithFormat:@"page=%d", self.currentPage]];
     
     if (searchText) {
         urlString = [urlString stringByReplacingOccurrencesOfString:@"products(" withString:[NSString stringWithFormat:@"products(name=%@*&", searchText]];

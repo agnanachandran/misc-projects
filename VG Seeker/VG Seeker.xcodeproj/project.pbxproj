@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E96BEA3E18A9C81000D2CFF1 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = E96BEA3D18A9C81000D2CFF1 /* Constants.m */; };
 		E982686F188359440088B3C2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E982686E188359440088B3C2 /* Foundation.framework */; };
 		E9826871188359440088B3C2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9826870188359440088B3C2 /* CoreGraphics.framework */; };
 		E9826873188359440088B3C2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9826872188359440088B3C2 /* UIKit.framework */; };
@@ -39,6 +40,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E96BEA3C18A9C81000D2CFF1 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		E96BEA3D18A9C81000D2CFF1 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		E982686B188359440088B3C2 /* VG Seeker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VG Seeker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E982686E188359440088B3C2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E9826870188359440088B3C2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -96,6 +99,8 @@
 		E9826862188359440088B3C2 = {
 			isa = PBXGroup;
 			children = (
+				E96BEA3C18A9C81000D2CFF1 /* Constants.h */,
+				E96BEA3D18A9C81000D2CFF1 /* Constants.m */,
 				E9F9603E188C76A900D38711 /* PZOVGCell.xib */,
 				E9F9603B188C71C300D38711 /* PZOVGCell.h */,
 				E9F9603C188C71C300D38711 /* PZOVGCell.m */,
@@ -285,6 +290,7 @@
 				E982687B188359440088B3C2 /* main.m in Sources */,
 				E9F9603D188C71C300D38711 /* PZOVGCell.m in Sources */,
 				E98268A818835AE90088B3C2 /* VideoGame.m in Sources */,
+				E96BEA3E18A9C81000D2CFF1 /* Constants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

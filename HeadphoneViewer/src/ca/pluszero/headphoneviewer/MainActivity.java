@@ -36,7 +36,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 public class MainActivity extends Activity {
 
 	private static final String BASE_URL = "http://api.remix.bestbuy.com/v1/products(name=headphones*)?show=sku,name&format=json&apiKey=";
-	private static final String API_KEY = "q3z2rf7eskg47b78xnwqxcvq";
+	private static final String API_KEY = ApiConstants.API_KEY;
 	private static final String FULL_URL = BASE_URL + API_KEY;
 	private static final String DEBUG_TAG = "DEBUG_TAG";
 	private static final int DELAY_FEED_RETRIEVE = 3000;
