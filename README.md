@@ -8,3 +8,4 @@ At the moment, it contains:
 * An Android app to view headphones from Best Buy's Mashery REST API
 * An iOS version of the above Best Buy app except with video games instead
 * A few technical questions I've encountered in the past; some are made up; some are not.
+* A Rails tutorial for a blog from RubyGuides
