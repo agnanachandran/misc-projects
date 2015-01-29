@@ -1,0 +1,22 @@
+RetirementAdvisor
+=================
+
+Start with:
+```
+bundle install
+```
+
+To seed the data, run:
+
+```
+rake db:seed
+```
+
+The above process will likely take a few hours, depending on your computer.
+
+Then simply run 
+```
+rails server
+```
+
+and open localhost:3000 in a browser to see the demo in action.

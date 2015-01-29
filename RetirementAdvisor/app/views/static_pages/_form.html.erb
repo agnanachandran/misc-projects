@@ -1,0 +1,52 @@
+<div class="row">
+  <div class="home-container">
+    <div class="col-md-12" id="gray-container">
+      <center><h1 id="home-intro">Retirement Calculator</h1></center>
+      <br>
+      <center><h3 id="instructions">Instructions:</h3></center>
+      <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+          <center><p id="instructions-detail">Select your portfolio type, and enter the following information to determine your projected retirement age. </p></center>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+          <center>
+            <%= form_for @retirement_age do |f| %>
+              <div class="col-md-12">
+                <%= f.label 'Portfolio type: ' %>
+                <%= f.select :portfolio_type, @portfolio_types_values.map{ |value| [value.gsub('_', ' ').titleize, value]}, :selected => params[:portfolio_type] %>
+              </div>
+
+              <div class="col-md-12">
+                <%= f.label 'Current age: ' %>
+                <%= f.select :current_age, @current_ages_values.map{ |value| [value, value]}, :selected => params[:current_age] %>
+              </div>
+
+              <div class="col-md-12">
+                <%= f.label 'Current Amount: ' %>
+                <%= f.select :current_amount, @current_amounts_values.map{ |value| [value, value]}, :selected => params[:current_amount] %>
+              </div>
+
+              <div class="col-md-12">
+                <%= f.label 'Yearly Contributions: ' %>
+                <%= f.select :yearly_contribution, @yearly_contributions_values.map{ |value| [value, value]}, :selected => params[:yearly_contribution] %>
+              </div>
+
+              <div class="col-md-12">
+                <%= f.label 'Desired Yearly Income: ' %>
+                <%= f.select :desired_yearly_income, @desired_yearly_incomes_values.map{ |value| [value, value]}, :selected => params[:desired_yearly_income] %>
+              </div>
+              <div class="col-md-12">
+                <center><%= f.submit "Submit", class: "btn btn-large btn-primary" %></center>
+              </div>
+            <% end %>
+          </center>
+          <div class="col-md-6 col-md-offset-3" id="retirement-statement">
+            <center><p> <%= @retirement_age_value != nil ? "You'll be able to retire at the ripe age of: #{@retirement_age_value}" : "" %></p></center>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
